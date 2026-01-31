@@ -1,0 +1,73 @@
+# -----------------------------
+# Maven / Java
+# -----------------------------
+/target/
+*.class
+*.jar
+*.war
+*.ear
+*.iml
+
+# Eclipse
+.metadata/
+*.tmp
+*.bak
+*.swp
+.settings/
+.recommenders/
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.ipr
+out/
+*.iml
+
+# VS Code
+.vscode/
+
+# -----------------------------
+# Logs
+# -----------------------------
+*.log
+logs/
+spring.log
+
+# -----------------------------
+# Spring / Batch / IDE temp files
+# -----------------------------
+hs_err_pid*
+*.hprof
+*.dump
+
+# -----------------------------
+# OS files
+# -----------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# -----------------------------
+# Docker
+# -----------------------------
+docker-compose.override.yml
+*.env
+*.env.local
+*.env.*.local
+*.swp
+
+# -----------------------------
+# Redis / DB / temp files
+# -----------------------------
+*.rdb
+*.backup
+*.sql
+*.sqlite
+*.h2.db
+
+# -----------------------------
+# Misc
+# -----------------------------
+*.class
+*.log
+*.tmp
