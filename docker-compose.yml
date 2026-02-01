@@ -1,0 +1,33 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: batch-postgres
+    environment:
+      POSTGRES_DB: batchdb
+      POSTGRES_USER: batchuser
+      POSTGRES_PASSWORD: batchpass
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: batch-redis
+    ports:
+      - '6379:6379'
+
+  batch-app:
+    build: .
+    container_name: spring-batch-app
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - '8080:8080'
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
