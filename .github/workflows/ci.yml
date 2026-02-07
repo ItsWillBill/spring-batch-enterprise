@@ -2,9 +2,7 @@ name: CI pipeline
 
 on:
   push:
-    branches: ['main', 'develop']
   pull_request:
-    branches: ['main', 'develop']
 
 jobs:
   build-test-docker:
@@ -14,9 +12,9 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_DB: ${ { secrets.POSTGRES_DB } }
-          POSTGRES_USER: ${ { secrets.POSTGRES_USER } }
-          POSTGRES_PASSWORD: ${ { secrets.POSTGRES_PASSWORD } }
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         ports:
           - 5432:5432
         options: >-
