@@ -23,6 +23,6 @@ public class JobTriggerController {
                 .toJobParameters();
 
         jobLauncher.run(transactionJob, jobParameters);
-        return "Transaction job has been triggered!";
+        return "Transaction job has been triggered";
     }
 }
