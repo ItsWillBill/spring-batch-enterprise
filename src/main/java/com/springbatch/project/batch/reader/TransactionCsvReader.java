@@ -6,6 +6,7 @@ import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.format.support.DefaultFormattingConversionService;
 
 import com.springbatch.project.domain.dto.TransactionCsvDTO;
 
@@ -19,13 +20,14 @@ public class TransactionCsvReader {
                 .resource(new ClassPathResource("data/transaction.csv"))
                 .linesToSkip(1)
                 .delimited()
+                .includedFields(0, 2, 3, 6)
                 .names(
-                        "transactionId", "accountNumber", "amount", "currency", "transactionType", "status",
-                        "transactionDate", "description")
+                        "reference", "amount", "currency", "transactionDate")
                 .fieldSetMapper(new BeanWrapperFieldSetMapper<TransactionCsvDTO>() {
                     {
                         setTargetType(TransactionCsvDTO.class);
-                        setDistanceLimit(0);
+                        setDistanceLimit(1);
+                        setConversionService(new DefaultFormattingConversionService());
                     }
                 })
                 .build();
