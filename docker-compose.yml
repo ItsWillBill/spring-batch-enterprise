@@ -2,6 +2,8 @@ services:
   postgres:
     image: postgres:16
     container_name: batch-postgres
+    env_file:
+      - .env
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
