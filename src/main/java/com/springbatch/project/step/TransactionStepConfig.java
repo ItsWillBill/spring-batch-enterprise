@@ -13,7 +13,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import com.springbatch.project.batch.writer.ErrorCsvWriter;
 import com.springbatch.project.domain.dto.TransactionCsvDTO;
-import com.springbatch.project.listener.TransactionSkipListener;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,7 +23,7 @@ public class TransactionStepConfig {
     @Bean
     public Step transactionStep(JobRepository jobRepository, PlatformTransactionManager transactionManager,
             ItemReader<TransactionCsvDTO> reader, ItemProcessor<TransactionCsvDTO, Object> processor,
-            ItemWriter<Object> writer, TransactionSkipListener listener, ErrorCsvWriter errorCsvWriter) {
+            ItemWriter<Object> writer, ErrorCsvWriter errorCsvWriter) {
 
         return new StepBuilder("transactionStep", jobRepository)
                 .<TransactionCsvDTO, Object>chunk(500, transactionManager)
@@ -37,7 +36,6 @@ public class TransactionStepConfig {
                 .skipLimit(100)
                 .retry(RedisConnectionFailureException.class)
                 .retryLimit(3)
-                .listener(listener)
                 .build();
     }
 }

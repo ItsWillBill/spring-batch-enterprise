@@ -53,7 +53,6 @@ public class ErrorCsvWriter implements ItemWriter<TransactionError>, ItemStream 
 
     @Override
     public void open(ExecutionContext executionContext) throws ItemStreamException {
-        this.errorCount = executionContext.getLong(ERROR_COUNT_KEY, 0L);
         boolean headerWritten = executionContext.containsKey(HEADER_WRITTEN_KEY)
                 && (Boolean) executionContext.get(HEADER_WRITTEN_KEY);
         try {
