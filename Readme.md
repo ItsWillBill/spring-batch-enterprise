@@ -3,7 +3,6 @@
 > A production-grade financial transaction reconciliation system built with **Spring Boot 3**, **Spring Batch 5**, **Java 21**, **PostgreSQL**, and **Redis**.  
 > Designed to process millions of records reliably, with full restart/recovery, audit trails, and cloud-native deployment.
 
-[![CI Pipeline](https://github.com/your-username/reconciliation-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/your-username/reconciliation-engine/actions)
 [![Java](https://img.shields.io/badge/Java-21-orange)](https://openjdk.org/projects/jdk/21/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3-green)](https://spring.io/projects/spring-boot)
 [![Spring Batch](https://img.shields.io/badge/Spring%20Batch-5.x-green)](https://spring.io/projects/spring-batch)
@@ -18,7 +17,6 @@
   - [🏗 Architecture](#-architecture)
     - [Hexagonal Architecture (Ports \& Adapters)](#hexagonal-architecture-ports--adapters)
   - [🛠 Tech Stack](#-tech-stack)
-  - [📂 Project Structure](#-project-structure)
   - [🚀 Getting Started](#-getting-started)
     - [Prerequisites](#prerequisites)
     - [1. Clone and configure](#1-clone-and-configure)
@@ -87,43 +85,6 @@ This engine automates that process at scale. It ingests raw transaction files (C
 | CI/CD               | GitHub Actions              | -       |
 | Testing             | JUnit 5 + Testcontainers    | -       |
 | Build               | Maven                       | 3.9+    |
-
----
-
-## 📂 Project Structure
-
-```
-reconciliation-engine/
-├── .github/workflows/ci.yml           ← GitHub Actions CI
-├── data/
-│   ├── input/                         ← CSV drop zone
-│   └── archive/                       ← Processed files
-├── src/main/java/com/reconciliation/
-│   ├── domain/                        ← Pure Java domain (no frameworks)
-│   │   ├── model/                     ← Records: Transaction, LedgerEntry, Result
-│   │   └── port/                      ← Interfaces: LedgerRepository, TransactionRepository
-│   ├── application/usecase/           ← ReconcileTransactionUseCase
-│   ├── infrastructure/
-│   │   ├── persistence/               ← JPA entities, repos, adapters
-│   │   └── csv/                       ← TransactionCsvMapper
-│   ├── batch/
-│   │   ├── config/                    ← Spring Batch infrastructure
-│   │   ├── job/                       ← Job configuration + launcher
-│   │   ├── step/                      ← Step configuration
-│   │   ├── reader/                    ← FlatFileItemReader
-│   │   ├── processor/                 ← ItemProcessor (calls use case)
-│   │   ├── writer/                    ← ItemWriter (bulk persist)
-│   │   └── tasklet/                   ← ArchiveFileTasklet
-│   └── shared/                        ← BatchProperties, Exceptions
-├── src/main/resources/
-│   ├── application.yml                ← Config (env var references only)
-│   ├── application-local.yml          ← Local dev (gitignored)
-│   └── db/migration/V1__init_schema.sql
-├── .env.example                       ← Secret template — commit this
-├── .gitignore                         ← .env gitignored — never commit real secrets
-├── Dockerfile                         ← Multi-stage build
-└── docker-compose.yml                 ← Full stack: app + postgres + redis
-```
 
 ---
 
