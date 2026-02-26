@@ -1,4 +1,8 @@
 .env
+application-local.yml
+application-local.yaml
+application-secrets.yml
+secrets/
 # -----------------------------
 # Maven / Java
 # -----------------------------
@@ -72,3 +76,9 @@ docker-compose.override.yml
 *.class
 *.log
 *.tmp
+
+# =============================================
+# Application data
+# =============================================
+data/input/*.csv
+data/archive/

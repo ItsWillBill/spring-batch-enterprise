@@ -1,14 +1,44 @@
-FROM maven:3.9.9-eclipse-temurin-21 AS build
-WORKDIR /app
+# STAGE 1: Build
+
+FROM eclipse-temurin:21-jdk-alpine AS builder
+
+WORKDIR /build
+
+COPY mvnw .
+COPY .mvn/ .mvn/
+RUN chmod +x mvnw
+
 COPY pom.xml .
-# it download both the dependency and maven plugin (mvn dependency:resolve will only download the dependencies but will be forced to connect 
-# to the intenet to fetch maven plugins which defeats the purpose of cache)
-RUN mvn dependency:go-offline 
+
+RUN ./mvnw dependency:go-offline -q
 
 COPY src ./src
-RUN mvn clean package -DskipTests
 
-FROM eclipse-temurin:21-jre
+RUN ./mvnw package -DskipTests --no-transfer-progress
+# Extract layers for efficient Docker caching (Spring Boot layared JARs)
+RUN java -Djarmode=layertools -jar target/reconciliation-engine-*.jar extract
+
+# STAGE 2: Runtime
+
+FROM eclipse-temurin:21-jre-alpine AS runtime
+
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
 WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
-ENTRYPOINT [ "java", "-jar", "app.jar" ]
+
+COPY --from=builder /build/dependencies/ ./
+COPY --from=builder /build/spring-boot-loader/ ./
+COPY --from=builder /build/snapshot-dependencies/ ./
+COPY --from=builder /build/application/ ./
+
+RUN mkdir -p /app/data/input /data/archive && chown -R appuser:appgroup /app /data
+
+USER appuser
+
+EXPOSE 8080
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD wget -q0- http://localhost:8080/actuator/health || exit 1
+
+ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75.0", \
+    "-Djava.security.egd=file:/dev/./urandom", "org.springframework.boot.loader.JarLauncher"]

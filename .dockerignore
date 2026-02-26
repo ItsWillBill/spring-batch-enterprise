@@ -1,0 +1,42 @@
+.env
+*.env
+application-local.yml
+application-local.yaml
+# -----------------------------------------------
+# Maven build output — the Dockerfile rebuilds this
+# inside the builder stage, so sending target/ is
+# pure waste (can be hundreds of MB)
+# -----------------------------------------------
+target/
+
+# -----------------------------------------------
+# IDE & OS noise
+# -----------------------------------------------
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.DS_Store
+Thumbs.db
+
+# -----------------------------------------------
+# Git internals — not needed at build time
+# -----------------------------------------------
+.git/
+.gitignore
+.gitattributes
+
+# -----------------------------------------------
+# CI — no reason for GitHub Actions config
+# to be inside the container
+# -----------------------------------------------
+.github/
+
+README.md
+CHANGELOG.md
+docs/
+data/input/
+data/archive/
+
+src/test/

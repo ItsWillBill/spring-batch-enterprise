@@ -1,7 +1,9 @@
+version: '3.9'
+
 services:
   postgres:
-    image: postgres:16
-    container_name: batch-postgres
+    image: postgres:16-alpine
+    container_name: reconciliation-postgres
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -10,26 +12,65 @@ services:
       - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} -h localhost',
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
   redis:
-    image: redis:7
-    container_name: batch-redis
+    image: redis:7.2-alpine
+    container_name: reconciliation-redis
+    command: >
+      sh -c "if [ -n "${REDIS_PASSWORD}" ]; then
+              redis-server --requirepass "${REDIS_PASSWORD}";
+            else
+              redis-server;
+            fi"
     ports:
       - '6379:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
   batch-app:
     build: .
-    container_name: spring-batch-app
+    container_name: reconciliation-app
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     ports:
       - '8080:8080'
     environment:
-      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
-      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
-      SPRING_PROFILES_ACTIVE: docker
-    restart: unless-stopped
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      APP_INPUT_DIR: /data/input
+      APP_ARCHIVE_DIR: /data/archive
+      BATCH_CHUNK_SIZE: ${BATCH_CHUNK_SIZE:500}
+      BATCH_MAX_THREADS: ${BATCH_MAX_THREADS:4}
+    volumes:
+      - ./data/input:/data/input
+      - ./data/archive:/data/archive
+    restart: on-failure
 
 volumes:
   postgres_data:
+  redis_data:
