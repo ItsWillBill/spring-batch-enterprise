@@ -1,10 +1,10 @@
-package com.springbatch.project;
+package com.reconciliation;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SpringBatchEnterpriseApplicationTests {
+class ReconciliationEngineApplicationTests {
 
 	@Test
 	void contextLoads() {

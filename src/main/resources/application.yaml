@@ -67,5 +67,5 @@ logging:
     org.springframework.batch: INFO
     org.springframework.transaction: WARN
     org.hibernate.SQL: WARN
-    pattern:
-      console: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'

@@ -8,10 +8,10 @@
 		<version>3.5.10</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.springbatch.project</groupId>
-	<artifactId>spring-batch-enterprise</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>reconciliation-engine</name>
+	<groupId>com.reconciliation</groupId>
+    <artifactId>reconciliation-engine</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>reconciliation-engine</name>
 	<description>Production-grade financial transaction reconciliation engine
         built with Spring Boot 3, Spring Batch 5, Java 21, and Redis.</description>
 	<url/>
