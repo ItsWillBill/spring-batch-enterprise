@@ -28,7 +28,7 @@ public class JobLauncherRunner implements CommandLineRunner {
         log.info("Launching reconciliation Job for file: {}", inputFileName);
 
         JobParameters params = ReconciliationJobConfig.buildJobParameters(inputFileName);
-        var job = jobConfig.transactionReconciliationJob(inputFileName);
+        var job = jobConfig.transactionReconciliationJob();
 
         var execution = jobLauncher.run(job, params);
 

@@ -1,8 +1,10 @@
 package com.reconciliation.batch.step;
 
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -15,7 +17,6 @@ import com.reconciliation.domain.model.ReconciliationResult;
 import com.reconciliation.domain.model.Transaction;
 import com.reconciliation.shared.BatchProperties;
 
-import ch.qos.logback.classic.spi.STEUtil;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -32,10 +33,10 @@ public class ReconciliationStepConfig {
     private final ArchiveFileTasklet archiveFileTasklet;
 
     @Bean
-    public Step reconciliationStep(String inputFileName) {
+    public Step reconciliationStep() {
         return new StepBuilder("reconciliationStep", jobRepository)
                 .<Transaction, ReconciliationResult>chunk(batchProperties.chunkSize(), transactionManager)
-                .reader(csvItemReader.reader(inputFileName))
+                .reader(csvItemReader.reader(null))
                 .processor(processor)
                 .writer(Writer)
                 .build();
