@@ -102,10 +102,10 @@ jobs:
           cache: maven
 
       - name: Check for unused/undeclared dependencies
-        run: ./mvnw dependency:analyze ----no-transfer-progress || true
+        run: ./mvnw dependency:analyze --no-transfer-progress || true
 
       - name: Check for known vulnerabilities (OWASP)
-        run: ./mvnw org.owasp:dependency-check-maven:check ----no-transfer-progress -DfailBuildOnCVSS=9 || true
+        run: ./mvnw org.owasp:dependency-check-maven:check --no-transfer-progress -DfailBuildOnCVSS=9 || true
 
       - name: Upload dependency check report
         if: always()
