@@ -62,8 +62,8 @@ jobs:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
           POSTGRES_DB: reconciliation_test
-          POSTGRES_USER: batchuser
-          POSTGRES_PASSWORD: batchpass
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
           REDIS_HOST: localhost
           REDIS_PORT: 6379
           REDIS_PASSWORD: ''
