@@ -106,7 +106,7 @@ jobs:
         run: ./mvnw dependency:analyze --no-transfer-progress || true
 
       - name: Check for known vulnerabilities (OWASP)
-        run: ./mvnw org.owasp:dependency-check-maven:check --no-transfer-progress -DfailBuildOnCVSS=9 || true
+        run: ./mvnw org.owasp:dependency-check-maven:check --no-transfer-progress -DnvdApiKey=${{ secrets.NVD_API_KEY }} -DfailBuildOnCVSS=9 || true
 
       - name: Upload dependency check report
         if: always()
@@ -115,6 +115,12 @@ jobs:
           name: dependency-check-report-${{ github.run_id }}
           path: target/dependency-check-report.html
           retention-days: 14
+
+      - name: Cache OWASP data
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository/org/owasp/dependency-check-data
+          key: owasp-${{ runner.os }}
 
   docker-build:
     name: Build Docker image
