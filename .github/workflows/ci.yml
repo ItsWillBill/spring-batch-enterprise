@@ -57,8 +57,14 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      - name: DEBUG - Check Flyway scripts
+        run: |
+          echo "Checking if files exist in the source code:"
+          ls -la src/main/resources/db/migration/ || echo "Folder not found!"
+
       - name: Build and run tests
         env:
+          SPRING_PROFILES_ACTIVE: test
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
           POSTGRES_DB: reconciliation_test
