@@ -82,7 +82,7 @@ jobs:
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' || (github.event_name == 'pull_request')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./mvnw sonar:sonar --no-transfer-progress Dsonar.token=${{ secrets.SONAR_TOKEN }}
+        run: ./mvnw sonar:sonar --no-transfer-progress -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
       - name: Upload test reports
         if: always()
