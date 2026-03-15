@@ -36,7 +36,7 @@
 		<jacoco.execution.data.file>${project.build.directory}/jacoco.exec</jacoco.execution.data.file>
 		
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.projectKey>reconciliation-engine</sonar.projectKey>
+        <sonar.projectKey>ItsWillBill_reconciliation-engine</sonar.projectKey>
         <sonar.organization>myorganization101</sonar.organization>
         <sonar.projectName>Reconciliation Engine</sonar.projectName>
         <sonar.java.source>21</sonar.java.source>
