@@ -82,8 +82,7 @@ jobs:
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' || (github.event_name == 'pull_request')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # SonarCloud token stored in GitHub Secrets
-        run: ./mvnw sonar:sonar -DskipTests --no-transfer-progress
+        run: ./mvnw sonar:sonar --no-transfer-progress Dsonar.token=${{ secrets.SONAR_TOKEN }}
 
       - name: Upload test reports
         if: always()

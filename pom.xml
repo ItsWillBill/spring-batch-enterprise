@@ -34,7 +34,26 @@
         <sonar.maven.plugin.version>3.11.0.3922</sonar.maven.plugin.version>
         <jacoco.maven.plugin.version>0.8.12</jacoco.maven.plugin.version>
 		<jacoco.execution.data.file>${project.build.directory}/jacoco.exec</jacoco.execution.data.file>
-        <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+		
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.projectKey>ItsWillBill_spring-batch-enterprise</sonar.projectKey>
+        <sonar.organization>ItsWillBill</sonar.organization>
+        <sonar.projectName>Reconciliation Engine</sonar.projectName>
+        <sonar.java.source>21</sonar.java.source>
+        <sonar.sources>src/main/java</sonar.sources>
+        <sonar.tests>src/test/java</sonar.tests>
+        <sonar.java.binaries>target/classes</sonar.java.binaries>
+        <sonar.coverage.jacoco.xmlReportPaths>
+            ${project.build.directory}/site/jacoco/jacoco.xml
+        </sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.junit.reportPaths>target/surefire-reports</sonar.junit.reportPaths>
+        <!-- Exclude generated/infra code from coverage and duplication checks -->
+        <sonar.coverage.exclusions>
+            **/infrastructure/persistence/entity/**,
+            **/ReconciliationEngineApplication.java
+        </sonar.coverage.exclusions>
+        <sonar.cpd.exclusions>**/db/migration/**</sonar.cpd.exclusions>
+        <sonar.exclusions>**/db/migration/**,**/generated-sources/**</sonar.exclusions>
 	</properties>
 	<dependencies>
 		<dependency>
