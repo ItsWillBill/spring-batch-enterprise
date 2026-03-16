@@ -53,6 +53,7 @@ services:
         condition: service_healthy
     ports:
       - '8080:8080'
+    command: ['${INPUT_FILE:-sample_transactions.csv}']
     environment:
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
@@ -64,8 +65,8 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       APP_INPUT_DIR: /data/input
       APP_ARCHIVE_DIR: /data/archive
-      BATCH_CHUNK_SIZE: ${BATCH_CHUNK_SIZE:500}
-      BATCH_MAX_THREADS: ${BATCH_MAX_THREADS:4}
+      BATCH_CHUNK_SIZE: ${BATCH_CHUNK_SIZE:-500}
+      BATCH_MAX_THREADS: ${BATCH_MAX_THREADS:-4}
     volumes:
       - ./data/input:/data/input
       - ./data/archive:/data/archive

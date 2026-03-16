@@ -4,8 +4,8 @@ spring:
 
   datasource:
     url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:reconciliation_db}
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
+    username: ${POSTGRES_USER:batchuser}
+    password: ${POSTGRES_PASSWORD:batchpass}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -49,7 +49,7 @@ app:
   batch:
     input-dir: ${APP_INPUT_DIR:/data/input}
     archive-dir: ${APP_ARCHIVE_DIR:/data/archive}
-    chunk-size: ${BATCH_CHUNK_SIZE:500}
+    chunk-size: ${BATCH_CHUNK_SIZE:100}
     max-threads: ${BATCH_MAX_THREADS:4}
 
 management:
