@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.reconciliation.application.usecase.ReconcileTransactionUseCase;
 import com.reconciliation.domain.model.ReconciliationResult;
 import com.reconciliation.domain.model.Transaction;
+import com.reconciliation.infrastructure.redis.DeduplicationService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,18 +20,34 @@ import lombok.extern.slf4j.Slf4j;
 public class ReconciliationItemProcessor implements ItemProcessor<Transaction, ReconciliationResult> {
 
     private final ReconcileTransactionUseCase reconcileUseCase;
+    private final DeduplicationService deduplicationService;
+
     private Long jobExecutionId;
+    private String runDate;
 
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {
         this.jobExecutionId = stepExecution.getJobExecutionId();
-        log.info("Processor initialized for jobExecutionId={}", jobExecutionId);
+        this.runDate = stepExecution.getJobParameters().getString("runDate");
+        log.info("Processor initialized - jobExecutionId={}, runDate={}", jobExecutionId, runDate);
     }
 
     @Override
     public ReconciliationResult process(@NonNull Transaction item) throws Exception {
-        log.debug("Processing transaction [externalId={}]", item.externalId());
-        return reconcileUseCase.reconcile(item, jobExecutionId);
+        String externalId = item.externalId();
+
+        // -- Deduplication check --
+        if (deduplicationService.isDuplicate(externalId, runDate)) {
+            log.debug("Filtering duplicate transaction [externalId={}] for runDate={}", externalId, runDate);
+            return null; // Skip duplicate transactions
+        }
+
+        // -- Reconciliation --
+        ReconciliationResult result = reconcileUseCase.reconcile(item, jobExecutionId);
+
+        deduplicationService.markProcessed(externalId, runDate); // Mark as processed for deduplication
+
+        return result;
     }
 
 }
