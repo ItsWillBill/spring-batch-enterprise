@@ -18,9 +18,9 @@ public class JobExecutionReportListener implements JobExecutionListener {
 
     @Override
     public void beforeJob(JobExecution jobExecution) {
-        log.info("╔══════════════════════════════════════════════════════════╗");
+        log.info("╔════════════════════════════════════════════════════════╗");
         log.info("║  JOB STARTING                                            ║");
-        log.info("╠══════════════════════════════════════════════════════════╣");
+        log.info("╠════════════════════════════════════════════════════════╣");
         log.info("║  Job name     : {}", jobExecution.getJobInstance().getJobName());
         log.info("║  Execution ID : {}", jobExecution.getId());
         log.info("║  Parameters   : {}", jobExecution.getJobParameters());
