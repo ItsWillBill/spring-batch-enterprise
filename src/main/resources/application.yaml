@@ -51,6 +51,9 @@ app:
     archive-dir: ${APP_ARCHIVE_DIR:/data/archive}
     chunk-size: ${BATCH_CHUNK_SIZE:100}
     max-threads: ${BATCH_MAX_THREADS:4}
+    skip-limit: ${BATCH_SKIP_LIMIT:10}
+    retry-limit: ${BATCH_RETRY_LIMIT:3}
+    dedup-ttl: ${BATCH_DEDUP_TTL:7} # days
 
 management:
   endpoints:
