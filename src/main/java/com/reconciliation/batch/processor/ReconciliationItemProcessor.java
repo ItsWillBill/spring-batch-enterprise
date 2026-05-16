@@ -2,6 +2,7 @@ package com.reconciliation.batch.processor;
 
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@StepScope
 public class ReconciliationItemProcessor implements ItemProcessor<Transaction, ReconciliationResult> {
 
     private final ReconcileTransactionUseCase reconcileUseCase;

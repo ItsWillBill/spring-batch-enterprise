@@ -1,16 +1,19 @@
 package com.reconciliation.batch.job;
 
+import com.reconciliation.shared.BatchProperties;
 import java.time.LocalDate;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.reconciliation.batch.listener.JobExecutionReportListener;
+import com.reconciliation.batch.step.PartitionedStepConfig;
 import com.reconciliation.batch.step.ReconciliationStepConfig;
 
 import lombok.RequiredArgsConstructor;
@@ -25,13 +28,16 @@ public class ReconciliationJobConfig {
 
     private final JobRepository jobRepository;
     private final ReconciliationStepConfig stepConfig;
+    private final PartitionedStepConfig partitionedStepConfig;
     private final JobExecutionReportListener reportListener;
+    private final BatchProperties batchProperties;
 
     @Bean
     public Job transactionReconciliationJob() {
+        Step processingStep = resolveProcessingStep();
         return new JobBuilder(JOB_NAME, jobRepository)
                 .listener(reportListener)
-                .start(stepConfig.reconciliationStep())
+                .start(processingStep)
                 .on("COMPLETED").to(stepConfig.archiveFileStep())
                 .on("FAILED").to(stepConfig.reportFailureStep())
                 .on("*").to(stepConfig.reconciliationStep())
@@ -41,6 +47,35 @@ public class ReconciliationJobConfig {
                 .on("*").fail()
                 .end()
                 .build();
+    }
+
+    /**
+     * Selects the processing step based on {@code app.batch.processing-mode}
+     * property.
+     */
+
+    private Step resolveProcessingStep() {
+        log.info("Selected processing mode: {}", batchProperties.processingMode());
+        return switch (batchProperties.processingMode().toLowerCase()) {
+            case "multithreaded" -> {
+                log.info("Processing mode : MULTI-THREADED (threads={})", batchProperties.maxThreads());
+                yield stepConfig.multiThreadReconciliationStep();
+            }
+            case "partitioned" -> {
+                log.info("Processing mode : PARTITIONED (gridSize = {}, threads={})", batchProperties.gridSize(),
+                        batchProperties.maxThreads());
+                yield partitionedStepConfig.masterPartitionStep();
+            }
+            case "single", "" -> {
+                log.info("Processing mode : SINGLE-THREADED");
+                yield stepConfig.reconciliationStep();
+            }
+            default -> {
+                log.warn("Unknown processing mode '{}', falling back to single-threaded",
+                        batchProperties.processingMode());
+                yield stepConfig.reconciliationStep();
+            }
+        };
     }
 
     /**

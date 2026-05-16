@@ -51,9 +51,11 @@ app:
     archive-dir: ${APP_ARCHIVE_DIR:/data/archive}
     chunk-size: ${BATCH_CHUNK_SIZE:100}
     max-threads: ${BATCH_MAX_THREADS:4}
-    skip-limit: ${BATCH_SKIP_LIMIT:10}
+    skip-limit: ${BATCH_SKIP_LIMIT:50}
     retry-limit: ${BATCH_RETRY_LIMIT:3}
     dedup-ttl: ${BATCH_DEDUP_TTL:7} # days
+    grid-size: ${BATCH_GRID_SIZE:4}
+    processing-mode: ${BATCH_PROCESSING_MODE:single} # single | multithreaded | partitioned
 
 management:
   endpoints:
